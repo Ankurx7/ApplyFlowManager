@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile - ApplyFlow Manager</title>
+  <style>
+    :root {
+      --primary: #7209b7;
+      --primary-light: #9d4edd;
+      --primary-dark: #560bad;
+      --secondary: #f8f9fa;
+      --accent: #3a86ff;
+      --danger: #e63946;
+      --success: #2ec4b6;
+      --text-color: #212529;
+      --text-light: #6c757d;
+      --border-color: #e5e7eb;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f9fafb;
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #e4eaff 100%);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .page-container {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      flex: 1;
+      display: flex;
+    }
+    
+    .container {
+      background-color: white;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      margin: 0;
+      overflow-y: auto;
+    }
+    
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+      background-color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin: 0;
+      color: var(--primary);
+    }
+    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-color);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .form-section {
+      margin-bottom: 2rem;
+    }
+    
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 0.625rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-color);
+      background-color: white;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(114, 9, 183, 0.15);
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .required::after {
+      content: " *";
+      color: var(--danger);
+    }
+    
+    .form-layout {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .form-column {
+      flex: 1;
+      padding: 1rem;
+      height: 100%;
+      overflow-y: auto;
+    }
+    
+    .form-column:first-child {
+      border-right: 1px solid var(--border-color);
+    }
+    
+    .row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .col {
+      flex: 1;
+    }
+    
+    button {
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    button.secondary {
+      background-color: var(--secondary);
+      color: var(--text-color);
+    }
+    
+    button.secondary:hover {
+      background-color: #e5e8f0;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      justify-content: flex-end;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      background-color: white;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+    }
+    
+    .education-item, .experience-item {
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      background-color: var(--secondary);
+    }
+    
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .item-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin: 0;
+    }
+    
+    .remove-btn {
+      background-color: var(--danger);
+      padding: 0.4rem 0.75rem;
+      font-size: 0.875rem;
+    }
+    
+    .add-btn {
+      background-color: var(--success);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    
+    .badge {
+      background-color: var(--accent);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .info-text {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      margin-top: 0.25rem;
+    }
+    
+    .dynamic-container {
+      margin-top: 1rem;
+    }
+    
+    
+    .full-width-section {
+      width: 100%;
+      padding: 1rem;
+      background-color: white;
+      margin-top: 1rem;
+    }
+    
+    
+    @media (max-width: 768px) {
+      .form-layout {
+        flex-direction: column;
+      }
+      
+      .form-column:first-child {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+      }
+    }
+
+    
+    .compact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    
+    .education-item, .experience-item {
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      background-color: var(--secondary);
+    }
+
+    
+    .education-item .row, .experience-item .row {
+      margin-bottom: 0.5rem;
+    }
+
+    .education-item .form-group, .experience-item .form-group {
+      margin-bottom: 0.5rem;
+    }
+    
+    .education-item .item-header, .experience-item .item-header {
+      margin-bottom: 0.5rem;
+    }
+    
+    .education-item textarea, .experience-item textarea {
+      min-height: 60px;
+    }
+    
+    .education-item label, .experience-item label {
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+    
+    .education-item input, .experience-item input,
+    .education-item select, .experience-item select,
+    .education-item textarea, .experience-item textarea {
+      padding: 0.5rem;
+    }
+    
+    .education-item .info-text, .experience-item .info-text {
+      margin-top: 0.125rem;
+      font-size: 0.75rem;
+    }
+    
+    .education-item .remove-btn, .experience-item .remove-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 992px) {
+      .compact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="container">
+      <div class="header-container">
+        <h1 id="form-title">
+          <img src="icons/A_F_LOGO.png" alt="ApplyFlow Manager Logo" style="height: 24px; margin-right: 8px; vertical-align: middle;">
+          <span id="form-title-text">Create New Profile</span>
+        </h1>
+      </div>
+      
+      <form id="profile-form">
+        <div class="form-layout">
+          
+          <div class="form-column">
+            
+            <div class="form-section">
+              <h2>Personal Information</h2>
+              
+              <div class="form-group">
+                <label for="name" class="required">Profile Name</label>
+                <input type="text" id="name" name="name" required>
+              </div>
+              
+              <div class="row">
+                <div class="col form-group">
+                  <label for="firstName" class="required">First Name</label>
+                  <input type="text" id="firstName" name="firstName" required>
+                </div>
+                
+                <div class="col form-group">
+                  <label for="middleName">Middle Name</label>
+                  <input type="text" id="middleName" name="middleName">
+                </div>
+                
+                <div class="col form-group">
+                  <label for="lastName" class="required">Last Name</label>
+                  <input type="text" id="lastName" name="lastName" required>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="preferredName">Preferred Name/Nickname</label>
+                <input type="text" id="preferredName" name="preferredName" placeholder="What name do you prefer to be called by?">
+              </div>
+              
+              <div class="row">
+                <div class="col form-group">
+                  <label for="dateOfBirth">Date of Birth</label>
+                  <input type="date" id="dateOfBirth" name="dateOfBirth">
+                </div>
+                
+                <div class="col form-group">
+                  <label for="gender">Gender</label>
+                  <select id="gender" name="gender">
+                    <option value="">Select gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col form-group">
+                  <label for="email" class="required">Email</label>
+                  <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="col form-group">
+                  <label for="phone">Primary Contact Number</label>
+                  <input type="tel" id="phone" name="phone">
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="form-section">
+              <h2>Address</h2>
+              
+              <div class="form-group">
+                <label for="addressStreet">Residential Address</label>
+                <input type="text" id="addressStreet" name="addressStreet">
+              </div>
+              
+              <div class="row">
+                <div class="col form-group">
+                  <label for="addressCity">City</label>
+                  <input type="text" id="addressCity" name="addressCity">
+                </div>
+                
+                <div class="col form-group">
+                  <label for="addressState">State/Province</label>
+                  <input type="text" id="addressState" name="addressState">
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col form-group">
+                  <label for="addressPostalCode">Postal/ZIP Code</label>
+                  <input type="text" id="addressPostalCode" name="addressPostalCode">
+                </div>
+                
+                <div class="col form-group">
+                  <label for="addressCountry">Country</label>
+                  <input type="text" id="addressCountry" name="addressCountry">
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="form-section">
+              <h2>Online Presence</h2>
+              
+              <div class="form-group">
+                <label for="portfolio">Portfolio Website</label>
+                <input type="url" id="portfolio" name="portfolio" placeholder="https://yourportfolio.com">
+              </div>
+              
+              <div class="form-group">
+                <label for="linkedin">LinkedIn</label>
+                <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+              </div>
+              
+              <div class="form-group">
+                <label for="github">GitHub</label>
+                <input type="url" id="github" name="github" placeholder="https://github.com/yourusername">
+              </div>
+            </div>
+          </div>
+          
+          
+          <div class="form-column">
+            
+            <div class="form-section">
+              <h2>Skills & Qualifications</h2>
+              
+              <div class="form-group">
+                <label for="skills">Technical Skills</label>
+                <textarea id="skills" name="skills" rows="3" placeholder="e.g., JavaScript, React, Node.js, Python, SQL (comma separated)"></textarea>
+                <p class="info-text">Enter technical skills separated by commas.</p>
+              </div>
+              
+              <div class="form-group">
+                <label for="softSkills">Soft Skills</label>
+                <textarea id="softSkills" name="softSkills" rows="3" placeholder="e.g., Communication, Leadership, Teamwork, Problem Solving (comma separated)"></textarea>
+                <p class="info-text">Enter soft/interpersonal skills separated by commas.</p>
+              </div>
+            </div>
+            
+            
+            <div class="form-section">
+              <h2>About You</h2>
+              
+              <div class="form-group">
+                <label for="aboutYou">Tell us about yourself</label>
+                <textarea id="aboutYou" name="aboutYou" rows="4" placeholder="Brief introduction about yourself and your career goals"></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="coverLetter">Cover Letter Template</label>
+                <textarea id="coverLetter" name="coverLetter" rows="6" placeholder="A general cover letter template that can be adapted for different applications"></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="availableStartDate">Available Start Date</label>
+                <input type="date" id="availableStartDate" name="availableStartDate">
+              </div>
+            </div>
+            
+            
+            <div class="form-section">
+              <div class="form-section-title">
+                <h2>Job Search Information</h2>
+                <span class="badge">For Job Search</span>
+              </div>
+              <p class="info-text">These fields will be used for job search functionality, not for form auto-filling.</p>
+              
+              <div class="row">
+                <div class="col form-group">
+                  <label for="jobRole" class="required">Primary Job Role</label>
+                  <input type="text" id="jobRole" name="jobRole" placeholder="e.g., Software Engineer, Data Scientist" required>
+                </div>
+                
+                <div class="col form-group">
+                  <label for="experienceLevel" class="required">Experience Level</label>
+                  <select id="experienceLevel" name="experienceLevel" required>
+                    <option value="fresher">Fresher</option>
+                    <option value="mid">Mid-Level</option>
+                    <option value="senior">Senior</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <div class="full-width-section">
+          
+          <div class="form-section">
+            <h2>Education</h2>
+            <button type="button" id="add-education" class="add-btn">+ Add Education</button>
+            <div id="education-container" class="dynamic-container compact-grid"></div>
+          </div>
+          
+          
+          <div class="form-section">
+            <h2>Work Experience</h2>
+            <button type="button" id="add-experience" class="add-btn">+ Add Work Experience</button>
+            <div id="experience-container" class="dynamic-container compact-grid"></div>
+          </div>
+          
+          
+          <div class="button-group">
+            <button type="button" id="cancel-btn" class="secondary">Cancel</button>
+            <button type="submit" id="save-btn">Save Profile</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  
+  <template id="education-template">
+    <div class="education-item">
+      <div class="item-header">
+        <h3 class="item-title">Education Entry</h3>
+        <button type="button" class="remove-btn" data-remove="education-{index}">Remove</button>
+      </div>
+      
+      <div class="form-group">
+        <label for="education-school-{index}" class="required">School/University</label>
+        <input type="text" id="education-school-{index}" name="education[{index}][schoolName]" required>
+      </div>
+      
+      <div class="row">
+        <div class="col form-group">
+          <label for="education-degree-{index}" class="required">Degree</label>
+          <input type="text" id="education-degree-{index}" name="education[{index}][degree]" required>
+        </div>
+        
+        <div class="col form-group">
+          <label for="education-field-{index}" class="required">Field of Study</label>
+          <input type="text" id="education-field-{index}" name="education[{index}][fieldOfStudy]" required>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col form-group">
+          <label for="education-start-{index}" class="required">Start Date</label>
+          <input type="date" id="education-start-{index}" name="education[{index}][startDate]" required>
+        </div>
+        
+        <div class="col form-group">
+          <label for="education-end-{index}">End Date</label>
+          <input type="date" id="education-end-{index}" name="education[{index}][endDate]">
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col form-group">
+          <label for="education-gpa-{index}">GPA/CGPA/Percentage</label>
+          <input type="text" id="education-gpa-{index}" name="education[{index}][gpa]" placeholder="e.g., 3.8 or 85%">
+        </div>
+        
+        <div class="col form-group">
+          <label for="education-location-{index}">Location</label>
+          <input type="text" id="education-location-{index}" name="education[{index}][location]">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="education-description-{index}">Description</label>
+        <textarea id="education-description-{index}" name="education[{index}][description]" rows="2" placeholder="Achievements, honors, activities, etc."></textarea>
+      </div>
+    </div>
+  </template>
+  
+  <template id="experience-template">
+    <div class="experience-item">
+      <div class="item-header">
+        <h3 class="item-title">Experience Entry</h3>
+        <button type="button" class="remove-btn" data-remove="experience-{index}">Remove</button>
+      </div>
+      
+      <div class="row">
+        <div class="col form-group">
+          <label for="experience-company-{index}" class="required">Company</label>
+          <input type="text" id="experience-company-{index}" name="workExperience[{index}][companyName]" required>
+        </div>
+        
+        <div class="col form-group">
+          <label for="experience-role-{index}" class="required">Role/Position</label>
+          <input type="text" id="experience-role-{index}" name="workExperience[{index}][role]" required>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col form-group">
+          <label for="experience-location-{index}">Location</label>
+          <input type="text" id="experience-location-{index}" name="workExperience[{index}][location]">
+        </div>
+        
+        <div class="col form-group">
+          <label for="experience-current-{index}">Current Position</label>
+          <select id="experience-current-{index}" name="workExperience[{index}][current]">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col form-group">
+          <label for="experience-start-{index}" class="required">Start Date</label>
+          <input type="date" id="experience-start-{index}" name="workExperience[{index}][startDate]" required>
+        </div>
+        
+        <div class="col form-group">
+          <label for="experience-end-{index}">End Date</label>
+          <input type="date" id="experience-end-{index}" name="workExperience[{index}][endDate]">
+          <p class="info-text">Leave empty if current position</p>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col form-group">
+          <label for="experience-description-{index}">Description</label>
+          <textarea id="experience-description-{index}" name="workExperience[{index}][description]" rows="2" placeholder="Description of your role and achievements"></textarea>
+        </div>
+        
+        <div class="col form-group">
+          <label for="experience-responsibilities-{index}">Responsibilities</label>
+          <textarea id="experience-responsibilities-{index}" name="workExperience[{index}][responsibilities]" rows="2" placeholder="Key responsibilities and duties"></textarea>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script src="profile-editor.js"></script>
+</body>
+</html> 

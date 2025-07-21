@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "ApplyFlow Manager",
+  "version": "1.0.1",
+  "description": "Streamline your job applications with automated form filling and comprehensive job search tools",
+  "author": "ApplyFlow Solutions",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "contextMenus",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icons/A_F_LOGO.png",
+      "48": "icons/A_F_LOGO.png",
+      "128": "icons/A_F_LOGO.png"
+    }
+  },
+  "icons": {
+    "16": "icons/A_F_LOGO.png",
+    "48": "icons/A_F_LOGO.png",
+    "128": "icons/A_F_LOGO.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["profile-editor.html", "profile-editor.js", "job-search.html", "job-search.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "browser_specific_settings": {
+    "edge": {
+      "browser_action_next_to_address_bar": true,
+      "minimum_edge_version": "89.0.774.68"
+    }
+  }
+} 

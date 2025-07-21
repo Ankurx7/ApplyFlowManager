@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApplyFlow Manager</title>
+  <style>
+    :root {
+      --primary: #7209b7;
+      --primary-light: #9d4edd;
+      --primary-dark: #560bad;
+      --secondary: #f8f9fa;
+      --accent: #3a86ff;
+      --danger: #d90429;
+      --success: #06d6a0;
+      --text: #212529;
+      --text-secondary: #6c757d;
+      --border: #dee2e6;
+      --card: #ffffff;
+      --card-hover: #f3f0ff;
+      --shadow: rgba(149, 157, 165, 0.15);
+      --gradient-1: linear-gradient(135deg, #7209b7 0%, #3a86ff 100%);
+      --gradient-2: linear-gradient(135deg, #4361ee 0%, #4cc9f0 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    
+    body {
+      width: 340px;
+      color: var(--text);
+      background-color: var(--secondary);
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    
+    .app-container {
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background-image: var(--gradient-1);
+      color: white;
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+      transform: rotate(30deg);
+    }
+    
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 1;
+    }
+    
+    .logo-icon {
+      width: 24px;
+      height: 24px;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+    }
+    
+    .content {
+      padding: 1rem;
+      background-color: var(--card);
+      border-radius: 0 0 8px 8px;
+    }
+    
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      color: white;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      background-color: var(--text-secondary);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      opacity: 0.7;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+    }
+    
+    .btn-danger:hover {
+      background-color: #b00020;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+    
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background-color: var(--card);
+      box-shadow: 0 2px 8px var(--shadow);
+      transition: all 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+    
+    .selected {
+      border-color: var(--primary);
+      background-color: var(--card-hover);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      background-color: var(--card);
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .empty-icon {
+      font-size: 2.5rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background-color: var(--card);
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      background-size: 1rem;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(114, 9, 183, 0.15);
+    }
+    
+    .form-group {
+      margin-bottom: 0.75rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.375rem;
+      font-weight: 500;
+      color: var(--text);
+      font-size: 0.8rem;
+    }
+    
+    .profile-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-actions button {
+      flex: 1;
+    }
+    
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .action-button {
+      width: 100%;
+      padding: 0.75rem;
+      justify-content: flex-start;
+      border-radius: 8px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .action-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: -1;
+    }
+    
+    .action-button:hover::before {
+      transform: translateX(0);
+    }
+    
+    .action-icon {
+      font-size: 1.25rem;
+      margin-right: 0.5rem;
+    }
+    
+    .divider {
+      height: 1px;
+      background-color: var(--border);
+      margin: 0.75rem 0;
+    }
+    
+    .created-by {
+      font-size: 0.7rem;
+      text-align: center;
+      color: var(--text-secondary);
+      margin-top: 0.75rem;
+    }
+    
+    .btn-autofill {
+      background-image: var(--gradient-1);
+    }
+    
+    .btn-search {
+      background-image: var(--gradient-2);
+    }
+
+    .icon-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 50%;
+      padding: 6px;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <h1>
+        <img src="icons/A_F_LOGO.png" class="logo-icon" alt="ApplyFlow Manager Logo">
+        ApplyFlow Manager
+      </h1>
+    </div>
+    
+    <div class="content">
+      <div id="no-profiles" class="empty-state">
+        <div class="empty-icon">✨</div>
+        <p>Create a profile to start automating your job applications</p>
+        <button id="create-profile" class="btn-primary">Create Profile</button>
+      </div>
+      
+      <div id="profiles-container" style="display:none;">
+        
+        <div class="form-group">
+          <label for="profiles-dropdown">Your Profile</label>
+          <select id="profiles-dropdown"></select>
+        </div>
+        
+        <div class="profile-actions">
+          <button id="new-profile-btn" class="btn-outline btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            New
+          </button>
+          <button id="edit-profile-btn" class="btn-outline btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Edit
+          </button>
+          <button id="delete-profile-btn" class="btn-danger btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Delete
+          </button>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="actions">
+          <button id="autofill-btn" class="action-button btn-autofill">
+            <div class="icon-container">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 5l-2-2H8L6 5H2v14h20V5h-4z" fill="#7209b7"/>
+                <path d="M12 18c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6z" fill="#7209b7"/>
+                <path d="M12 14l2-2m0 0l-2-2m2 2H9" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            Auto-fill Application
+          </button>
+          <button id="job-search-btn" class="action-button btn-search">
+            <div class="icon-container">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" fill="#4361ee"/>
+                <path d="M21 21l-6-6" stroke="#4361ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 7v6M7 10h6" stroke="#4361ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            Find New Jobs
+          </button>
+        </div>
+        
+        <p class="created-by">ApplyFlow Manager v1.0</p>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 

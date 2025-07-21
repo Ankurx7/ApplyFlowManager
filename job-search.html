@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Search - ApplyFlow Manager</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    .app-header {
+      background-color: #fff;
+      border-bottom: 1px solid #e5e9f0;
+      padding: 1rem 2rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .app-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2e3440;
+      background: linear-gradient(90deg, #5e81ac 0%, #81a1c1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .search-info {
+      font-size: 0.875rem;
+      color: #4c566a;
+      text-align: right;
+      padding: 0.5rem 0.75rem;
+      background-color: #f5f7fa;
+      border-radius: 0.375rem;
+      border: 1px solid #e5e9f0;
+    }
+    
+    .main-content {
+      display: flex;
+      flex: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      gap: 1.75rem;
+      width: 100%;
+    }
+    
+   
+    .search-panel {
+      width: 24%;
+      background-color: #fff;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      position: sticky;
+      top: 1.5rem;
+      height: fit-content;
+    }
+    
+    .panel-section {
+      margin-bottom: 1.75rem;
+    }
+    
+    .panel-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2e3440;
+      margin-bottom: 1.25rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    
+    .panel-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 3rem;
+      height: 3px;
+      background: linear-gradient(90deg, #5e81ac 0%, #81a1c1 100%);
+      border-radius: 3px;
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #4c566a;
+      font-size: 0.875rem;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid #d8dee9;
+      background-color: white;
+      font-size: 0.875rem;
+      color: #2e3440;
+      transition: all 0.2s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #5e81ac;
+      box-shadow: 0 0 0 3px rgba(94, 129, 172, 0.1);
+    }
+    
+    .site-filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+    
+    .site-filter-option {
+      padding: 0.75rem;
+      background-color: #f5f7fa;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      color: #4c566a;
+      transition: all 0.3s;
+      border: 1px solid #e5e9f0;
+      font-size: 0.875rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .site-filter-option:hover {
+      background-color: #e5e9f0;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .site-filter-option.active {
+      background-color: #5e81ac;
+      color: white;
+      box-shadow: 0 3px 8px rgba(94, 129, 172, 0.3);
+      border-color: #5e81ac;
+    }
+    
+    .search-button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #5e81ac;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      box-shadow: 0 3px 8px rgba(94, 129, 172, 0.25);
+    }
+    
+    .search-button:hover {
+      background-color: #4c6e94;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(94, 129, 172, 0.35);
+    }
+    
+    .back-button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #e5e9f0;
+      color: #4c566a;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      font-size: 0.875rem;
+      margin-top: 0.75rem;
+      border: 1px solid #d8dee9;
+    }
+    
+    .back-button:hover {
+      background-color: #d8dee9;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    
+    .jobs-panel {
+      width: 76%;
+      flex: 1;
+    }
+    
+    .stats-card {
+      background-color: #fff;
+      border-radius: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .stat-block {
+      text-align: center;
+      padding: 0.5rem;
+    }
+    
+    .stat-number {
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: #5e81ac;
+      background: linear-gradient(90deg, #5e81ac 0%, #81a1c1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: #4c566a;
+      margin-top: 0.25rem;
+      font-weight: 500;
+    }
+    
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    
+    .job-site-card {
+      border-radius: 0.75rem;
+      overflow: visible;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      height: 320px;
+      cursor: pointer;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+    
+    .job-site-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-header {
+      padding: 1.25rem;
+      position: relative;
+      z-index: 1;
+      height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 0.75rem 0.75rem 0 0;
+      overflow: hidden;
+    }
+    
+    .card-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 110px;
+      z-index: 0;
+      opacity: 0.95;
+    }
+    
+    .card-body {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+    }
+    
+    .card-footer {
+      padding: 0.75rem 1.25rem 1.25rem;
+      background-color: transparent;
+      border-top: none;
+    }
+    
+    .card-logo {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      z-index: 1;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: white;
+      z-index: 1;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-subtitle {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.95);
+      z-index: 1;
+    }
+    
+    .card-stats {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: #4c566a;
+      margin-bottom: 0.75rem;
+    }
+    
+    .card-stat {
+      display: flex;
+      align-items: center;
+    }
+    
+    .stat-icon {
+      margin-right: 0.25rem;
+    }
+    
+    .card-description {
+      font-size: 0.8125rem;
+      color: #4c566a;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+    
+    .search-query {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #2e3440;
+      background-color: #f5f7fa;
+      padding: 0.5rem;
+      border-radius: 0.375rem;
+      margin-top: 0.5rem;
+      line-height: 1.4;
+      max-height: 80px;
+      overflow: hidden;
+    }
+    
+    .site-badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      border-radius: 0.375rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      z-index: 2;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .superpower-badge {
+      position: absolute;
+      top: 95px;
+      right: 1.25rem;
+      background-color: #eceff4;
+      border-radius: 2rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #2e3440;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      max-width: 90%;
+      transform: translateY(50%);
+    }
+    
+    .superpower-icon {
+      margin-right: 0.375rem;
+      font-size: 1rem;
+    }
+    
+    .search-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      background-color: #5e81ac;
+      color: white;
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      box-shadow: 0 2px 6px rgba(94, 129, 172, 0.25);
+    }
+    
+    .search-btn:hover {
+      background-color: #4c6e94;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(94, 129, 172, 0.35);
+    }
+    
+
+    .linkedin .card-bg { background: linear-gradient(135deg, #0077B5 0%, #0a66c2 100%); }
+    .naukri .card-bg { background: linear-gradient(135deg, #ff7555 0%, #e44d26 100%); }
+    .indeed .card-bg { background: linear-gradient(135deg, #003A9B 0%, #2557a7 100%); }
+    .google .card-bg { background: linear-gradient(135deg, #4285F4 0%, #1a73e8 100%); }
+    .timesjobs .card-bg { background: linear-gradient(135deg, #e71b64 0%, #a6124e 100%); }
+    .shine .card-bg { background: linear-gradient(135deg, #1D976C 0%, #93F9B9 100%); }
+    .instahyre .card-bg { background: linear-gradient(135deg, #614385 0%, #516395 100%); }
+    .monster .card-bg { background: linear-gradient(135deg, #5614B0 0%, #6c25be 100%); }
+    .glassdoor .card-bg { background: linear-gradient(135deg, #0CAA41 0%, #0caa41 100%); }
+    .dice .card-bg { background: linear-gradient(135deg, #396afc 0%, #2948ff 100%); }
+    .simplyhired .card-bg { background: linear-gradient(135deg, #334d50 0%, #4a746a 100%); }
+    .angellist .card-bg { background: linear-gradient(135deg, #2c3e50 0%, #4a5568 100%); }
+    .hirist .card-bg { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .cutshort .card-bg { background: linear-gradient(135deg, #0575E6 0%, #021B79 100%); }
+    .internshala .card-bg { background: linear-gradient(135deg, #006BC6 0%, #1E88E5 100%); }
+    .jobsforher .card-bg { background: linear-gradient(135deg, #FF6B6B 0%, #d44848 100%); }
+    .iimjobs .card-bg { background: linear-gradient(135deg, #1A2980 0%, #26D0CE 100%); }
+    .linkedin-jobs .card-bg { background: linear-gradient(135deg, #00416A 0%, #1a73e8 100%); }
+    .ziprecruiter .card-bg { background: linear-gradient(135deg, #5d31bf 0%, #7357d2 100%); }
+    .careerbuilder .card-bg { background: linear-gradient(135deg, #00AED1 0%, #0099cc 100%); }
+    .flexjobs .card-bg { background: linear-gradient(135deg, #1E88E5 0%, #29B6F6 100%); }
+    .remoteok .card-bg { background: linear-gradient(135deg, #0f2027 0%, #2c3e50 100%); }
+    .upwork .card-bg { background: linear-gradient(135deg, #6FDA44 0%, #4CAF50 100%); }
+    .fiverr .card-bg { background: linear-gradient(135deg, #1DBF73 0%, #00b67a 100%); }
+    .wellfound .card-bg { background: linear-gradient(135deg, #240b36 0%, #4d1c6b 100%); }
+    
+    
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .search-panel, .jobs-panel {
+        width: 100%;
+      }
+      
+      .stats-card {
+        flex-wrap: wrap;
+      }
+      
+      .stat-block {
+        width: 50%;
+      }
+      
+      .superpower-badge {
+        max-width: 85%;
+        right: 0.75rem;
+      }
+    }
+    
+    .app-footer {
+      background-color: #fff;
+      border-top: 1px solid #e5e9f0;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8125rem;
+      color: #4c566a;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="app-title">
+          <img src="icons/A_F_LOGO.png" alt="ApplyFlow Manager Logo" style="height: 24px; margin-right: 8px; vertical-align: middle;">
+          ApplyFlow Manager
+        </h1>
+        <div class="search-info">
+          <div id="profile-name"></div>
+          <div id="search-params"></div>
+        </div>
+      </div>
+    </header>
+    
+    
+    <main class="main-content">
+      
+      <aside class="search-panel">
+        <div class="panel-section">
+          <h2 class="panel-title">Search Jobs</h2>
+          <div class="form-group">
+            <label for="job-title">Job Title or Keywords</label>
+            <input type="text" id="job-title" placeholder="Software Engineer, Data Analyst, etc.">
+          </div>
+          
+          <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" placeholder="City, State, or Country">
+          </div>
+          
+          <div class="form-group">
+            <label for="experience">Experience Level</label>
+            <select id="experience">
+              <option value="fresher">Fresher</option>
+              <option value="mid">Mid Level</option>
+              <option value="senior">Senior Level</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="panel-section">
+          <h2 class="panel-title">Filter Sites</h2>
+          <div class="site-filter-options">
+            <div class="site-filter-option active" data-country="india">India Sites</div>
+            <div class="site-filter-option" data-country="global">Global Sites</div>
+            <div class="site-filter-option" data-country="all">All Sites</div>
+          </div>
+        </div>
+        
+        <button id="back-btn" class="back-button">Back to Profiles</button>
+      </aside>
+      
+      
+      <section class="jobs-panel">
+        <div class="stats-card">
+          <div class="stat-block">
+            <div class="stat-number">25+</div>
+            <div class="stat-label">Job Sites</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-number">50M+</div>
+            <div class="stat-label">Job Listings</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-number">180+</div>
+            <div class="stat-label">Countries</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-number">1-Click</div>
+            <div class="stat-label">Search</div>
+          </div>
+        </div>
+        
+        <div class="jobs-grid" id="top-sites-grid">
+          
+        </div>
+      </section>
+    </main>
+    
+    
+    <footer class="app-footer">
+      Using profile information to search for jobs across popular websites. 
+      Click on any job site to search using your criteria.
+    </footer>
+  </div>
+
+  <template id="top-site-card-template">
+    <div class="job-site-card">
+      <div class="site-badge">Global</div>
+      <div class="card-header">
+        <div class="card-bg"></div>
+        <div class="card-logo"></div>
+        <div class="card-title"></div>
+        <div class="card-subtitle"></div>
+      </div>
+      <div class="superpower-badge">
+        <span class="superpower-icon">⚡</span>
+        <span class="superpower-text"></span>
+      </div>
+      <div class="card-body">
+        <div class="card-stats">
+          <div class="card-stat">
+            <span class="stat-icon">📊</span>
+            <span class="stat-value"></span>
+          </div>
+          <div class="card-stat">
+            <span class="stat-icon">🔍</span>
+            <span class="stat-value"></span>
+          </div>
+        </div>
+        <div class="card-description"></div>
+        <div class="search-query"></div>
+      </div>
+      <div class="card-footer">
+        <button class="search-btn">Search Jobs</button>
+      </div>
+    </div>
+  </template>
+
+  <script src="job-search.js"></script>
+</body>
+</html> 
